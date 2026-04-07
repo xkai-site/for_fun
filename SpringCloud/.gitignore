@@ -1,22 +1,43 @@
-# IntelliJ
+# IntelliJ IDEA
 .idea/
 *.iml
+*.ipr
+*.iws
 
-# Maven
+# VS Code
+.vscode/
+
+# Maven / Java build outputs
 **/target/
 .mvn/
+.m2/
 
-# Logs
+# Logs and runtime files
 *.log
 logs/
+*.pid
+*.out
+*.hprof
 
-# OS
+# JMeter outputs
+*.jtl
+*.jmx.log
+jmeter.log
+jmeter-report/
+loadtest-results/
+
+# Generated skill package
+*.skill
+
+# Local environment files
+.env
+.env.*
+settings-local.xml
+
+# OS files
 .DS_Store
 Thumbs.db
 
-# Runtime
-*.pid
-*.out
+# Local AI skill workspace
+skills/
 
-# Local env
-.env
