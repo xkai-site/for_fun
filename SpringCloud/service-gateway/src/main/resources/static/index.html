@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpringCloud Learning Console</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --ink: #17212b;
+      --muted: #5f6f80;
+      --brand: #0d6e6e;
+      --line: #dce6f0;
+      --ok: #1f8f5f;
+      --err: #c34141;
+      --shadow: 0 10px 30px rgba(12, 31, 48, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 0% 0%, #d7efe9 0, transparent 42%),
+        radial-gradient(circle at 100% 20%, #e6f0ff 0, transparent 36%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1080px, 92vw);
+      margin: 24px auto 40px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #0d6e6e, #145b86);
+      color: #f6fdff;
+      padding: 22px 24px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 { margin: 0; font-size: clamp(22px, 3.5vw, 34px); }
+    .hero p { margin: 8px 0 0; color: #d7f5f8; font-size: 14px; }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 { margin: 0 0 10px; font-size: 16px; color: #183248; }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    label { font-size: 13px; color: var(--muted); }
+
+    input[type="number"] {
+      border: 1px solid #c6d6e6;
+      background: #fbfdff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 14px;
+      width: 110px;
+      outline: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: #49a2c1;
+      box-shadow: 0 0 0 3px rgba(73, 162, 193, 0.16);
+    }
+
+    button {
+      border: none;
+      background: #0d6e6e;
+      color: #f5ffff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); background: #0a5f5f; }
+    button.secondary { background: #2a5d88; }
+    button.warn { background: #b24a3a; }
+
+    .hint { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+
+    .output {
+      margin-top: 16px;
+      background: #0f1721;
+      color: #dde8f3;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid #23364b;
+      box-shadow: var(--shadow);
+    }
+
+    .output-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .badge {
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 12px;
+      background: #1f2e3f;
+      color: #c8d7e8;
+    }
+
+    .badge.ok { background: rgba(31, 143, 95, 0.2); color: #87e0b7; }
+    .badge.err { background: rgba(195, 65, 65, 0.2); color: #ffb3b3; }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 13px;
+      line-height: 1.45;
+      max-height: 340px;
+      overflow: auto;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      input[type="number"] { width: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>SpringCloud Learning Console</h1>
+      <p>Use one page to exercise core APIs and observe routing, fallback, and transaction behavior.</p>
+      <p>Gateway Base URL: <strong>http://localhost:18080</strong></p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h3>Query User</h3>
+        <div class="row">
+          <label for="userId">userId</label>
+          <input id="userId" type="number" value="1" min="1" />
+          <button id="btnUser">GET /api/users/{id}</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Query Product</h3>
+        <div class="row">
+          <label for="productId">productId</label>
+          <input id="productId" type="number" value="1" min="1" />
+          <button id="btnProduct">GET /api/products/{id}</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Create Order</h3>
+        <div class="row">
+          <label for="orderUserId">userId</label>
+          <input id="orderUserId" type="number" value="1" min="1" />
+          <label for="orderProductId">productId</label>
+          <input id="orderProductId" type="number" value="1" min="1" />
+          <label for="orderCount">count</label>
+          <input id="orderCount" type="number" value="1" min="1" />
+        </div>
+        <div class="row">
+          <label>
+            <input id="forceFail" type="checkbox" /> forceFail (trigger Seata rollback)
+          </label>
+        </div>
+        <div class="row">
+          <button class="secondary" id="btnOrder">POST /api/orders</button>
+        </div>
+        <div class="hint">Use forceFail to validate distributed transaction rollback behavior.</div>
+      </article>
+
+      <article class="card">
+        <h3>Query Order and Config</h3>
+        <div class="row">
+          <label for="orderId">orderId</label>
+          <input id="orderId" type="number" placeholder="id from create response" min="1" />
+          <button id="btnGetOrder">GET /api/orders/{id}</button>
+        </div>
+        <div class="row">
+          <button id="btnConfig">GET /api/orders/config</button>
+          <button class="warn" id="btnClear">Clear Output</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="output">
+      <div class="output-head">
+        <span id="op">Waiting for operation...</span>
+        <span id="resultBadge" class="badge">IDLE</span>
+      </div>
+      <pre id="result">Response data will be shown here.</pre>
+    </section>
+  </main>
+
+  <script>
+    const opEl = document.getElementById("op");
+    const badgeEl = document.getElementById("resultBadge");
+    const resultEl = document.getElementById("result");
+
+    function setOutput(operation, status, payload) {
+      opEl.textContent = `${operation} | ${new Date().toLocaleString()}`;
+      badgeEl.textContent = status;
+      badgeEl.className = "badge" + (status.startsWith("2") ? " ok" : status === "IDLE" ? "" : " err");
+      resultEl.textContent = typeof payload === "string" ? payload : JSON.stringify(payload, null, 2);
+    }
+
+    async function request(operation, url, options = {}) {
+      setOutput(operation, "...", "Request in progress...");
+      try {
+        const resp = await fetch(url, options);
+        const text = await resp.text();
+        let body = text;
+        try {
+          body = text ? JSON.parse(text) : {};
+        } catch (_) {
+          body = text;
+        }
+        setOutput(operation, String(resp.status), body);
+      } catch (err) {
+        setOutput(operation, "ERR", err.message || String(err));
+      }
+    }
+
+    document.getElementById("btnUser").addEventListener("click", () => {
+      const id = document.getElementById("userId").value || "1";
+      request(`GET /api/users/${id}`, `/api/users/${id}`);
+    });
+
+    document.getElementById("btnProduct").addEventListener("click", () => {
+      const id = document.getElementById("productId").value || "1";
+      request(`GET /api/products/${id}`, `/api/products/${id}`);
+    });
+
+    document.getElementById("btnOrder").addEventListener("click", () => {
+      const payload = {
+        userId: Number(document.getElementById("orderUserId").value || 1),
+        productId: Number(document.getElementById("orderProductId").value || 1),
+        count: Number(document.getElementById("orderCount").value || 1),
+        forceFail: document.getElementById("forceFail").checked
+      };
+      request("POST /api/orders", "/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    });
+
+    document.getElementById("btnGetOrder").addEventListener("click", () => {
+      const id = document.getElementById("orderId").value;
+      if (!id) {
+        setOutput("GET /api/orders/{id}", "ERR", "Please input orderId first.");
+        return;
+      }
+      request(`GET /api/orders/${id}`, `/api/orders/${id}`);
+    });
+
+    document.getElementById("btnConfig").addEventListener("click", () => {
+      request("GET /api/orders/config", "/api/orders/config");
+    });
+
+    document.getElementById("btnClear").addEventListener("click", () => {
+      setOutput("Waiting for operation...", "IDLE", "Response data will be shown here.");
+    });
+  </script>
+</body>
+</html>
