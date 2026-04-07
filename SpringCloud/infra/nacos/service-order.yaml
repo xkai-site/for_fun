@@ -1,0 +1,12 @@
+# Optional Nacos config sample for service-order
+
+spring:
+  cloud:
+    openfeign:
+      sentinel:
+        enabled: true
+
+custom:
+  order:
+    featureFlag: true
+    maxCreateCount: 5

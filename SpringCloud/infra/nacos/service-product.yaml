@@ -1,0 +1,5 @@
+# Optional Nacos config sample for service-product
+
+custom:
+  product:
+    lowStockThreshold: 10

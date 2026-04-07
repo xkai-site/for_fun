@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sc-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: springcloud_lab
+      TZ: Asia/Shanghai
+    ports:
+      - "13306:3306"
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./infra/mysql/init:/docker-entrypoint-initdb.d
+
+  nacos:
+    image: nacos/nacos-server:v2.3.2
+    container_name: sc-nacos
+    environment:
+      MODE: standalone
+      NACOS_AUTH_ENABLE: "false"
+      JVM_XMS: 256m
+      JVM_XMX: 256m
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    depends_on:
+      - mysql
+
+  sentinel-dashboard:
+    image: bladex/sentinel-dashboard:1.8.6
+    container_name: sc-sentinel
+    ports:
+      - "8858:8858"
+
+  seata-server:
+    image: seataio/seata-server:2.0.0
+    container_name: sc-seata
+    environment:
+      SEATA_IP: 127.0.0.1
+      SEATA_PORT: 8091
+      STORE_MODE: file
+    ports:
+      - "8091:8091"
+
+  zipkin:
+    image: openzipkin/zipkin:2.24.3
+    container_name: sc-zipkin
+    ports:
+      - "9411:9411"

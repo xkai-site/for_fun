@@ -1,0 +1,56 @@
+server:
+  port: 18080
+
+spring:
+  application:
+    name: service-gateway
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+  cloud:
+    nacos:
+      server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      discovery:
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        namespace: ${NACOS_NAMESPACE:}
+        file-extension: yaml
+    sentinel:
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD:127.0.0.1:8858}
+        port: ${SENTINEL_PORT:8718}
+    gateway:
+      routes:
+        - id: user-route
+          uri: lb://service-user
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1
+        - id: product-route
+          uri: lb://service-product
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - StripPrefix=1
+        - id: account-route
+          uri: lb://service-account
+          predicates:
+            - Path=/api/accounts/**
+          filters:
+            - StripPrefix=1
+        - id: order-route
+          uri: lb://service-order
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
