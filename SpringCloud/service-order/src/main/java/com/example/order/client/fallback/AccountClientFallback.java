@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+// OpenFeign的兜底，在Controller中是Sentinel的兜底。
 @Component
 public class AccountClientFallback implements AccountClient {
 
